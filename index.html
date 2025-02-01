@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App</title>
+    <style>
+        button {
+            margin: 5px;
+        }
+        .order-button {
+            margin-top: 20px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>Выберите товар и город</h1>
+    <button onclick="selectProduct('Товар1', 10000)">Кнопка1 - 10000 руб.</button><br>
+    <button onclick="selectProduct('Товар2', 20000)">Кнопка2 - 20000 руб.</button><br>
+    <select id="citySelect">
+        <option value="Город1">Город1</option>
+        <option value="Город2">Город2</option>
+    </select>
+    <hr>
+    <button class="order-button" onclick="order()">Заказать</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        let selectedProduct;
+        let selectedPrice;
+        
+        // Предполагаемый статический адрес Биткоин для примера
+        let bitcoinAddress = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa";
+
+        function selectProduct(product, price) {
+            selectedProduct = product;
+            selectedPrice = price;
+        }
+
+        function order() {
+            const city = document.getElementById('citySelect').value;
+
+            if (!selectedProduct || !selectedPrice) {
+                alert("Пожалуйста, выберите товар.");
+                return;
+            }
+
+            if (tg) {
+                const data = {
+                    city: city,
+                    product: selectedProduct,
+                    price: selectedPrice,
+                    bitcoinAddress: bitcoinAddress
+                };
+                tg.sendData(JSON.stringify(data));
+                tg.expand();
+                tg.ready();
+            } else {
+                console.error("Telegram Web App API is not available.");
+            }
+        }
+    </script>
+</body>
+</html>
